@@ -11,7 +11,8 @@ import json
 
 # Retrieve the metadata for your location with:  https://api.weather.gov/points/{lat},{lon}
 
-latLon = "38.8894,-77.0352" # Sample from faq
+# Sample from faq
+latLon = "38.8894,-77.0352"
 requestURL = "https://api.weather.gov/points/" + latLon
 
 print("Requesting metadata...")
@@ -44,9 +45,23 @@ else:
 
     print("Requesting forecast data...")
 
+    response_API = requests.get(requestURL)
+    print("Response code:", response_API.status_code)
 
+    if response_API.status_code != 200:
+        print("API call failed")
+    else:
+        dataRaw: str = response_API.text
+        print("Response text: " + dataRaw)
 
-    # Roll through the periods, output detailedForecast for each
+        # Parse the data into JSON format
+        dataJSON = json.loads(dataRaw)
 
+        # Roll through the periods, output detailedForecast for each
 
+        print("Forecasts:")
 
+        for value in dataJSON['properties']['periods']:
+            print(value['name'] + ': ' + value['detailedForecast'])
+
+        print("Done!")
